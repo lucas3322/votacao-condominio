@@ -7,6 +7,15 @@ import { z } from "zod";
 import { clearAdminSession, createAdminSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+function normalizeFormData(formData: FormData) {
+  const normalized = new FormData();
+  for (const [key, value] of formData.entries()) {
+    if (/^\d+$/.test(key)) continue;
+    normalized.append(key.replace(/^\d+_/, ""), value);
+  }
+  return normalized;
+}
+
 const voteSchema = z.object({
   name: z.string().trim().min(3).max(100),
   phone: z.string().transform((value) => value.replace(/\D/g, "")).pipe(z.string().min(10).max(13)),
@@ -18,10 +27,11 @@ const voteSchema = z.object({
 });
 
 export async function saveVote(formData: FormData) {
-  const parsed = voteSchema.safeParse(Object.fromEntries(formData));
+  const normalized = normalizeFormData(formData);
+  const parsed = voteSchema.safeParse(Object.fromEntries(normalized));
   const services = z.array(z.enum(["BLACKOUT", "BLIND", "WALLPAPER", "CURTAIN", "OTHER"]))
     .min(1)
-    .safeParse(formData.getAll("services"));
+    .safeParse(normalized.getAll("services"));
   if (!parsed.success || !services.success) redirect("/?erro=dados");
 
   const data = parsed.data;
@@ -60,8 +70,9 @@ export async function saveVote(formData: FormData) {
 }
 
 export async function loginAdmin(formData: FormData) {
-  const username = String(formData.get("username") || "");
-  const password = String(formData.get("password") || "");
+  const normalized = normalizeFormData(formData);
+  const username = String(normalized.get("username") || "");
+  const password = String(normalized.get("password") || "");
   const validUser = username === (process.env.MASTER_USERNAME || "lucas.pardinho");
   const hash = process.env.MASTER_PASSWORD_HASH || "";
   const validPassword = hash ? await compare(password, hash) : false;
