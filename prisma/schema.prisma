@@ -7,12 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Choice {
-  CURTAIN
-  BLIND
-  NONE
-}
-
 model Vote {
   id              String   @id @default(cuid())
   name            String
@@ -20,13 +14,11 @@ model Vote {
   apartment       String
   tower           String
   windowCount     Int
-  windowChoice    Choice
   hasBalcony      Boolean
-  balconyChoice   Choice?
+  services        String[] @default([])
   notes           String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   @@unique([tower, apartment])
-  @@index([windowChoice])
 }

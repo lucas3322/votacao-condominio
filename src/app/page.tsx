@@ -14,16 +14,16 @@ export default async function Home({ searchParams }: Props) {
 
       <section className="hero">
         <div>
-          <p className="eyebrow">LEVANTAMENTO DE ADESÃO</p>
-          <h1>Cortinas e persianas,<br />sem complicação.</h1>
-          <p className="hero-copy">Informe quais serviços deseja contratar. Vamos reunir as quantidades de moradores, janelas e portas de sacada para organizar o pedido coletivo.</p>
+          <p className="eyebrow">PEDIDO COLETIVO DO CONDOMÍNIO</p>
+          <h1>Quais serviços você tem interesse?</h1>
+          <p className="hero-copy">Selecione uma ou mais opções e informe os detalhes do apartamento. Assim conseguimos levantar as quantidades exatas para cada fornecedor.</p>
           <div className="steps">
             <span><b>1</b> Identifique-se</span><span><b>2</b> Informe as janelas</span><span><b>3</b> Confirme</span>
           </div>
         </div>
         <aside className="info-card">
           <span className="info-icon">i</span>
-          <div><strong>Não é uma votação</strong><p>Nenhuma opção precisa vencer. O objetivo é somar corretamente quantas pessoas desejam cada serviço.</p></div>
+          <div><strong>Levantamento de interesse</strong><p>Não existe opção vencedora. Cada serviço será contabilizado separadamente.</p></div>
         </aside>
       </section>
 
@@ -40,12 +40,20 @@ export default async function Home({ searchParams }: Props) {
             <label>Apartamento<input name="apartment" placeholder="Ex.: 312" required /></label>
           </div>
           <div className="divider" />
-          <div className="form-heading compact"><div><span>02</span><h2>O que você precisa?</h2></div></div>
+          <div className="form-heading compact"><div><span>02</span><h2>Serviços de interesse</h2></div></div>
+          <fieldset className="services-field">
+            <legend>Selecione uma ou mais opções</legend>
+            <div className="service-options">
+              <label><input type="checkbox" name="services" value="BLACKOUT" /><span><b>Cortina blackout</b><small>Bloqueio de luz para quartos e salas</small></span></label>
+              <label><input type="checkbox" name="services" value="BLIND" /><span><b>Persiana</b><small>Modelos sob medida para suas janelas</small></span></label>
+              <label><input type="checkbox" name="services" value="WALLPAPER" /><span><b>Papel de parede</b><small>Aplicação decorativa nos ambientes</small></span></label>
+              <label><input type="checkbox" name="services" value="CURTAIN" /><span><b>Cortina</b><small>Cortinas tradicionais sob medida</small></span></label>
+              <label><input type="checkbox" name="services" value="OTHER" /><span><b>Outros</b><small>Descreva sua necessidade nas observações</small></span></label>
+            </div>
+          </fieldset>
           <div className="grid two">
             <label>Quantidade de janelas<input name="windowCount" type="number" min="1" max="30" defaultValue="1" required /></label>
-            <label>Preferência para as janelas<select name="windowChoice" required><option value="CURTAIN">Cortina</option><option value="BLIND">Persiana</option><option value="NONE">Ainda não quero</option></select></label>
             <fieldset><legend>O apartamento tem sacada?</legend><div className="radio-row"><label><input type="radio" name="hasBalcony" value="yes" required /> Sim</label><label><input type="radio" name="hasBalcony" value="no" /> Não</label></div></fieldset>
-            <label>Preferência para a porta da sacada<select name="balconyChoice"><option value="NONE">Não preciso / não se aplica</option><option value="CURTAIN">Cortina</option><option value="BLIND">Persiana</option></select></label>
           </div>
           <label>Observações (opcional)<textarea name="notes" placeholder="Alguma medida, detalhe ou observação importante?" rows={3} /></label>
           <button type="submit" className="primary">Registrar meu interesse <span>→</span></button>

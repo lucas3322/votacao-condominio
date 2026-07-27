@@ -13,15 +13,16 @@ const voteSchema = z.object({
   apartment: z.string().trim().min(1).max(10),
   tower: z.string().trim().min(1).max(30),
   windowCount: z.coerce.number().int().min(1).max(30),
-  windowChoice: z.enum(["CURTAIN", "BLIND", "NONE"]),
   hasBalcony: z.enum(["yes", "no"]),
-  balconyChoice: z.enum(["CURTAIN", "BLIND", "NONE"]).optional(),
   notes: z.string().trim().max(400).optional(),
 });
 
 export async function saveVote(formData: FormData) {
   const parsed = voteSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) redirect("/?erro=dados");
+  const services = z.array(z.enum(["BLACKOUT", "BLIND", "WALLPAPER", "CURTAIN", "OTHER"]))
+    .min(1)
+    .safeParse(formData.getAll("services"));
+  if (!parsed.success || !services.success) redirect("/?erro=dados");
 
   const data = parsed.data;
   const tower = data.tower.toUpperCase();
@@ -40,9 +41,8 @@ export async function saveVote(formData: FormData) {
     tower,
     apartment,
     windowCount: data.windowCount,
-    windowChoice: data.windowChoice,
     hasBalcony: data.hasBalcony === "yes",
-    balconyChoice: data.hasBalcony === "yes" ? data.balconyChoice || "NONE" : null,
+    services: services.data,
     notes: data.notes || null,
   };
 
